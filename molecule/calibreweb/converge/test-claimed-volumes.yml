@@ -1,0 +1,21 @@
+---
+
+- name: test-claimed-volumes - apply
+  shell: |
+    set -eo pipefail
+    /tmp/hck/kustomize build ../../modules/calibreweb/overlays/test-claimed-volumes \
+      | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
+  args:
+    executable: /bin/bash
+    warn: false
+  register: apply_manifest
+  changed_when: "'deployment.apps/tcv-calibreweb unchanged' not in apply_manifest.stdout"
+
+- name: test-claimed-volumes - wait for calibreweb
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get deploy tcv-calibreweb \
+    -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+  changed_when: false
+  register: kubectl_get_calibreweb
+  delay: 3
+  retries: 40
+  until: "'True' in kubectl_get_calibreweb.stdout"

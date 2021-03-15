@@ -1,0 +1,21 @@
+---
+
+- name: test-longhorn-mounts-checker - apply
+  shell: |
+    set -eo pipefail
+    /tmp/hck/kustomize build ../../modules/calibreweb/overlays/test-longhorn-mounts-checker \
+      | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
+  args:
+    executable: /bin/bash
+    warn: false
+  register: apply_manifest
+  changed_when: "'tlmc-deployment.apps/tit-calibreweb unchanged' not in apply_manifest.stdout"
+
+- name: test-longhorn-mounts-checker - wait for calibreweb
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get deploy tlmc-calibreweb \
+    -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+  changed_when: false
+  register: kubectl_get_calibreweb
+  delay: 3
+  retries: 40
+  until: "'True' in kubectl_get_calibreweb.stdout"

@@ -1,0 +1,20 @@
+---
+
+- hosts: localhost
+  tasks:
+    - name: stat /tmp/hck/kind
+      stat:
+        path: /tmp/hck/kind
+      register: stat_kind
+
+    - name: List kind clusters
+      when: stat_kind.stat.exists
+      command: /tmp/hck/kind get clusters
+      register: list_kind_clusters
+      changed_when: false
+
+    - name: Delete cluster
+      when: stat_kind.stat.exists and kind_cluster_name in list_kind_clusters.stdout
+      command: /tmp/hck/kind delete clusters {{ kind_cluster_name }}
+      register: delete_kind_cluster
+      changed_when: false

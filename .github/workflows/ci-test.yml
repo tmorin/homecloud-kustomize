@@ -1,0 +1,36 @@
+name: Continous Integration - Test
+
+on: [ push, pull_request ]
+
+jobs:
+
+  calibreweb:
+    name: Test molecule scenario
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: [ 'calibreweb' ]
+    env:
+      MOLECULE_SCENARIO: ${{ matrix.scenario }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - uses: actions/cache@v2
+        with:
+          path: venv
+          key: pip-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: pip-${{ steps.setup-python.outputs.python-version }}-
+
+      - name: Install Python requirements
+        run: |
+          pip install --user --upgrade setuptools wheel pip
+          pip install --user -r requirements.txt
+
+      - name: Execute test scenario
+        run: |
+          molecule test -s $MOLECULE_SCENARIO

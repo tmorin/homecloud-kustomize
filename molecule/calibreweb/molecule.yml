@@ -1,0 +1,25 @@
+---
+
+dependency:
+  name: galaxy
+  options:
+    requirements-file: molecule/resources/requirements.yml
+
+driver:
+  name: delegated
+
+platforms:
+  - name: hck-molecule-calibreweb-control-plane
+
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../resources/playbooks/create.yml
+    destroy: ../resources/playbooks/destroy.yml
+  inventory:
+    group_vars:
+      all:
+        kind_cluster_name: "hck-molecule-{{ molecule_yml.scenario.name }}"
+
+verifier:
+  name: ansible

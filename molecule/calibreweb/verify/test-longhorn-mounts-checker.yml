@@ -1,0 +1,22 @@
+---
+
+- name: test-longhorn-mounts-checker - get pv
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pv
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-longhorn-mounts-checker - get pvc
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pvc
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-longhorn-mounts-checker - assert
+  assert:
+    quiet: true
+    that:
+      - "'default/tlmc-calibreweb-config   longhorn' in get_pv.stdout"
+      - "'default/tlmc-calibreweb-books    standard' in get_pv.stdout"
+      - "'tlmc-calibreweb-config   Bound' in get_pvc.stdout"
+      - "'tlmc-calibreweb-books    Bound' in get_pvc.stdout"

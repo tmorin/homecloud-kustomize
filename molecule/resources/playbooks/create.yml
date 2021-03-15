@@ -1,0 +1,158 @@
+---
+
+- hosts: localhost
+  tasks:
+    - name: Create /tmp/hck
+      file:
+        path: /tmp/hck
+        state: directory
+    - name: Install /tmp/hck/kustomize
+      shell: |
+        set -eo pipefail
+        VERS=$(curl -w '%{url_effective}' -I -L -s \
+          -S https://github.com/kubernetes-sigs/kustomize/releases/latest \
+          -o /dev/null | sed -e 's|.*/||')
+        curl -sfL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${VERS}/kustomize_${VERS}_linux_amd64.tar.gz | \
+          tar xz -C /tmp/hck
+        chmod +x /tmp/hck/kustomize
+      args:
+        executable: /bin/bash
+        creates: /tmp/hck/kustomize
+        warn: false
+    - name: Install /tmp/hck/kubectl
+      shell: |
+        set -eo pipefail
+        VERS=$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)
+        curl -sfL -o /tmp/hck/kubectl "https://storage.googleapis.com/kubernetes-release/release/${VERS}/bin/linux/amd64/kubectl"
+        chmod +x /tmp/hck/kubectl
+      args:
+        executable: /bin/bash
+        creates: /tmp/hck/kubectl
+        warn: false
+    - name: Install /tmp/hck/kind
+      shell: |
+        set -eo pipefail
+        VERS=$(curl -w '%{url_effective}' -I -L -s \
+          -S https://github.com/kubernetes-sigs/kind/releases/latest \
+          -o /dev/null | sed -e 's|.*/||')
+        curl -sfL -o /tmp/hck/kind "https://github.com/kubernetes-sigs/kind/releases/download/${VERS}/kind-linux-amd64"
+        chmod +x /tmp/hck/kind
+      args:
+        executable: /bin/bash
+        creates: /tmp/hck/kind
+        warn: false
+    - name: Install /tmp/hck/helm
+      shell: |
+        set -eo pipefail
+        VERS=$(curl -w '%{url_effective}' -I -L -s \
+          -S https://github.com/helm/helm/releases/latest \
+          -o /dev/null | sed -e 's|.*/||')
+        curl -sfL https://get.helm.sh/helm-${VERS}-linux-amd64.tar.gz | \
+          tar xz -C /tmp/
+        mv /tmp/linux-amd64/helm /tmp/hck/helm
+        chmod +x /tmp/hck/helm
+        rm -Rf /tmp/linux-amd64
+      args:
+        executable: /bin/bash
+        creates: /tmp/hck/helm
+        warn: false
+
+- hosts: localhost
+  tasks:
+    - name: List kind clusters
+      command: /tmp/hck/kind get clusters
+      register: list_kind_clusters
+      changed_when: false
+    - name: Create cluster
+      when: kind_cluster_name not in list_kind_clusters.stdout
+      shell: |
+        cat <<EOF | /tmp/hck/kind create cluster --name {{ kind_cluster_name }} --config=-
+        kind: Cluster
+        apiVersion: kind.x-k8s.io/v1alpha4
+        nodes:
+        - role: control-plane
+          kubeadmConfigPatches:
+          - |
+            kind: InitConfiguration
+            nodeRegistration:
+              kubeletExtraArgs:
+                node-labels: "ingress-ready=true"
+          extraPortMappings:
+          - containerPort: 32080
+            hostPort: 32080
+            protocol: TCP
+          - containerPort: 32443
+            hostPort: 32443
+            protocol: TCP
+        EOF
+      changed_when: false
+
+- hosts: localhost
+  tasks:
+    - name: Install traefik - list installed charts
+      command: /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} -n kube-system list -q
+      register: list_charts
+    - name: Install traefik - install chart
+      when: "'traefik' not in list_charts.stdout"
+      shell: |
+        set -eo pipefail
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo add traefik https://helm.traefik.io/traefik
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo update
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} install traefik traefik/traefik \
+          -n kube-system \
+          -f ../files/traefik.chart.yaml
+      args:
+        executable: /bin/bash
+      register: install_traefik
+      changed_when: "'STATUS: deployed' in install_traefik.stdout"
+    - name: Wait for Traefik
+      command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n kube-system \
+        get deploy traefik \
+        -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+      changed_when: false
+      register: kubectl_get_traefik
+      delay: 3
+      retries: 40
+      until: "'True' in kubectl_get_traefik.stdout"
+
+- hosts: localhost
+  tasks:
+    - name: Install longhorn - install dependencies
+      shell: |
+        docker exec {{ kind_cluster_name }}-control-plane apt update
+        docker exec {{ kind_cluster_name }}-control-plane apt install -y open-iscsi nfs-common cifs-utils
+      args:
+        executable: /bin/bash
+      changed_when: false
+    - name: Install longhorn - list installed charts
+      command: /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} -n kube-system list -q
+      register: list_charts
+      changed_when: false
+    - name: Install longhorn - install chart
+      when: "'longhorn' not in list_charts.stdout"
+      shell: |
+        set -eo pipefail
+        /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} create namespace longhorn-system
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo add longhorn https://charts.longhorn.io
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo update
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} install longhorn longhorn/longhorn \
+          --namespace longhorn-system \
+          --set defaultSettings.defaultReplicaCount="1"
+      args:
+        executable: /bin/bash
+      register: install_longhorn
+      changed_when: "'STATUS: deployed' in install_longhorn.stdout"
+    - name: Wait for longhorn
+      command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n longhorn-system \
+        get deploy longhorn-driver-deployer \
+        -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+      changed_when: false
+      register: kubectl_get_longhorn
+      delay: 3
+      retries: 40
+      until: "'True' in kubectl_get_longhorn.stdout"
+    - name: Install longhorn - fix the default storage
+      command: |
+        /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
+          patch storageclass longhorn \
+          -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'

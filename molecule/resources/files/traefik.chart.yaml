@@ -1,0 +1,14 @@
+ports:
+  web:
+    nodePort: 32080
+    redirectTo: websecure
+  websecure:
+    nodePort: 32443
+    tls:
+      enabled: true
+      certResolver: le
+additionalArguments:
+  - "--certificatesresolvers.le.acme.httpchallenge=true"
+  - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"
+  - "--certificatesresolvers.le.acme.email=admin@local"
+  - "--certificatesresolvers.le.acme.storage=/data/acme.json"

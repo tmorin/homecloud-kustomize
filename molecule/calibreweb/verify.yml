@@ -1,0 +1,7 @@
+---
+
+- hosts: localhost
+  tasks:
+    - include_tasks: ./verify/test-claimed-volumes.yml
+    - include_tasks: ./verify/test-ingress-traefik.yml
+    #- include_tasks: ./verify/test-longhorn-mounts-checker.yml

@@ -1,0 +1,22 @@
+---
+
+- name: test-claimed-volumes - get pv
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pv
+  args:
+    warn: false
+  register: get_pv
+
+- name: test-claimed-volumes - get pvc
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pvc
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-claimed-volumes - assert
+  assert:
+    quiet: true
+    that:
+      - "'default/tcv-calibreweb-config   standard' in get_pv.stdout"
+      - "'default/tcv-calibreweb-books    standard' in get_pv.stdout"
+      - "'tcv-calibreweb-config   Bound' in get_pvc.stdout"
+      - "'tcv-calibreweb-books    Bound' in get_pvc.stdout"

@@ -1,0 +1,34 @@
+{
+  "name": "homecloud-kustomize",
+  "version": "0.1.0-alpha.0",
+  "private": true,
+  "author": {
+    "name": "Thibault Morin",
+    "url": "https://tmorin.github.io"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tmorin/homecloud-kustomize/issues"
+  },
+  "homepage": "https://github.com/tmorin/homecloud-kustomize#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tmorin/homecloud-kustomize.git"
+  },
+  "scripts": {
+    "release:alpha": "standard-version --commit-all --prerelease alpha --skip.changelog --skip.tag",
+    "release:beta": "standard-version --commit-all --prerelease beta --skip.changelog",
+    "release:publish": "git push --tags && git push --all",
+    "release:standard": "standard-version --commit-all"
+  },
+  "standard-version": {
+    "scripts": {
+      "postbump": "node ./postbump.js > postbump.log",
+      "precommit": "git add -A"
+    }
+  },
+  "dependencies": {
+    "standard-version": "^9.1.1",
+    "yaml": "^1.10.0"
+  }
+}
