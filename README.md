@@ -1,2 +1,3 @@
 # homecloud-kustomize
-Set of Kustomize resources dedicated for Homecloud
+
+> Set of Kustomize resources dedicated for Homecloud
