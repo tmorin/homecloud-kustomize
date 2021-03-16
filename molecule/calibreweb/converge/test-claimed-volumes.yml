@@ -9,7 +9,7 @@
     executable: /bin/bash
     warn: false
   register: apply_manifest
-  changed_when: "'deployment.apps/tcv-calibreweb unchanged' not in apply_manifest.stdout"
+  changed_when: false
 
 - name: test-claimed-volumes - wait for calibreweb
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get deploy tcv-calibreweb \

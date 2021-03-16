@@ -18,7 +18,9 @@
   assert:
     quiet: true
     that:
-      - "'[tcv-calibreweb-config Bound standard]' in get_pv.stdout"
-      - "'[tcv-calibreweb-books Bound standard]' in get_pv.stdout"
-      - "'[tcv-calibreweb-config Bound]' in get_pvc.stdout"
-      - "'[tcv-calibreweb-books Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-database Bound standard]' in get_pv.stdout"
+      - "'[tcv-nextcloud-dnas Bound standard]' in get_pv.stdout"
+      - "'[tcv-nextcloud-server Bound standard]' in get_pv.stdout"
+      - "'[tcv-nextcloud-database Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-dnas Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-server Bound]' in get_pvc.stdout"

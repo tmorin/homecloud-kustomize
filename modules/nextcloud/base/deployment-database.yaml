@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nextcloud-database
+  name: nextcloud-database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-database
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nextcloud-database
+    spec:
+      containers:
+        - name: database
+          image: mariadb:10.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: nextcloud-common
+                optional: false
+            - secretRef:
+                name: nextcloud-common
+                optional: false
+            - secretRef:
+                name: nextcloud-database
+                optional: false
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}"
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: data
+          emptyDir: { }

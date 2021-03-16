@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-server
+spec:
+  template:
+    spec:
+      volumes:
+        - name: data
+          emptyDir:
+          persistentVolumeClaim:
+            claimName: nextcloud-server
+        - name: dnas
+          emptyDir:
+          persistentVolumeClaim:
+            claimName: nextcloud-dnas

@@ -11,3 +11,4 @@ The Kustomize resources are grouped by standalone modules.
 Each module is composed of a base, additional components and overlays.
 
 - calibreweb
+- nextcloud

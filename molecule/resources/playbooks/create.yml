@@ -111,7 +111,7 @@
         -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
       changed_when: false
       register: kubectl_get_traefik
-      delay: 3
+      delay: 2
       retries: 40
       until: "'True' in kubectl_get_traefik.stdout"
 
@@ -148,7 +148,7 @@
         -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
       changed_when: false
       register: kubectl_get_longhorn
-      delay: 3
+      delay: 5
       retries: 40
       until: "'True' in kubectl_get_longhorn.stdout"
     - name: Install longhorn - fix the default storage

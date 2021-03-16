@@ -18,7 +18,9 @@
   assert:
     quiet: true
     that:
-      - "'[tlmc-calibreweb-config Bound longhorn]' in get_pv.stdout"
-      - "'[tlmc-calibreweb-books Bound standard]' in get_pv.stdout"
-      - "'[tlmc-calibreweb-config Bound]' in get_pvc.stdout"
-      - "'[tlmc-calibreweb-books Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-database Bound longhorn]' in get_pv.stdout"
+      - "'[tcv-nextcloud-dnas Bound standard]' in get_pv.stdout"
+      - "'[tcv-nextcloud-server Bound longhorn]' in get_pv.stdout"
+      - "'[tcv-nextcloud-database Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-dnas Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-server Bound]' in get_pvc.stdout"

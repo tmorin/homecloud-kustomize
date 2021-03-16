@@ -9,7 +9,7 @@
     executable: /bin/bash
     warn: false
   register: apply_manifest
-  changed_when: "'tlmc-deployment.apps/tit-calibreweb unchanged' not in apply_manifest.stdout"
+  changed_when: false
 
 - name: test-longhorn-mounts-checker - wait for calibreweb
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get deploy tlmc-calibreweb \
