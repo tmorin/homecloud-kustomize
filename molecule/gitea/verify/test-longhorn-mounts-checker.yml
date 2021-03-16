@@ -1,0 +1,22 @@
+---
+
+- name: test-longhorn-mounts-checker - get pv
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pv \
+    -ojsonpath="{range .items[*]}[{.spec.claimRef.name} {.status.phase} {.spec.storageClassName}] {end}"
+  args:
+    warn: false
+  register: get_pv
+
+- name: test-longhorn-mounts-checker - get pvc
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pvc \
+    -ojsonpath="{range .items[*]}[{.metadata.name} {.status.phase}] {end}"
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-longhorn-mounts-checker - assert
+  assert:
+    quiet: true
+    that:
+      - "'[tlmc-gitea-data Bound longhorn]' in get_pv.stdout"
+      - "'[tlmc-gitea-data Bound]' in get_pvc.stdout"

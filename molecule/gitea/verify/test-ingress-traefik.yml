@@ -1,0 +1,7 @@
+---
+
+- name: test-ingress-traefik - curl
+  command: curl -fkH host:gitea.home.cloud https://localhost:32443
+  changed_when: false
+  args:
+    warn: false
