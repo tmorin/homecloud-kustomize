@@ -115,44 +115,46 @@
       retries: 40
       until: "'True' in kubectl_get_traefik.stdout"
 
-- hosts: localhost
-  tasks:
-    - name: Install longhorn - install dependencies
-      shell: |
-        docker exec {{ kind_cluster_name }}-control-plane apt update
-        docker exec {{ kind_cluster_name }}-control-plane apt install -y open-iscsi nfs-common cifs-utils
-      args:
-        executable: /bin/bash
-      changed_when: false
-    - name: Install longhorn - list installed charts
-      command: /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} -n kube-system list -q
-      register: list_charts
-      changed_when: false
-    - name: Install longhorn - install chart
-      when: "'longhorn' not in list_charts.stdout"
-      shell: |
-        set -eo pipefail
-        /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} create namespace longhorn-system
-        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo add longhorn https://charts.longhorn.io
-        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo update
-        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} install longhorn longhorn/longhorn \
-          --namespace longhorn-system \
-          --set defaultSettings.defaultReplicaCount="1"
-      args:
-        executable: /bin/bash
-      register: install_longhorn
-      changed_when: "'STATUS: deployed' in install_longhorn.stdout"
-    - name: Wait for longhorn
-      command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n longhorn-system \
-        get deploy longhorn-driver-deployer \
-        -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
-      changed_when: false
-      register: kubectl_get_longhorn
-      delay: 5
-      retries: 40
-      until: "'True' in kubectl_get_longhorn.stdout"
-    - name: Install longhorn - fix the default storage
-      command: |
-        /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-          patch storageclass longhorn \
-          -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+# Longhorn cannot work on KinD
+#- hosts: localhost
+#  tasks:
+#    - name: Install longhorn - install dependencies
+#      shell: |
+#        docker exec {{ kind_cluster_name }}-control-plane apt update
+#        docker exec {{ kind_cluster_name }}-control-plane apt install -y open-iscsi nfs-common cifs-utils
+#      args:
+#        executable: /bin/bash
+#      changed_when: false
+#    - name: Install longhorn - list installed charts
+#      command: /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} -n kube-system list -q
+#      register: list_charts
+#      changed_when: false
+#    - name: Install longhorn - install chart
+#      when: "'longhorn' not in list_charts.stdout"
+#      shell: |
+#        set -eo pipefail
+#        /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} create namespace longhorn-system
+#        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo add longhorn https://charts.longhorn.io
+#        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo update
+#        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} install longhorn longhorn/longhorn \
+#          --namespace longhorn-system \
+#          --set persistence.defaultClass=false \
+#          --set persistence.defaultClassReplicaCount=1 \
+#          --set csi.attacherReplicaCount=1 \
+#          --set csi.provisionerReplicaCount=1 \
+#          --set csi.resizerReplicaCount=1 \
+#          --set csi.snapshotterReplicaCount=1 \
+#          --set defaultSettings.defaultReplicaCount=1
+#      args:
+#        executable: /bin/bash
+#      register: install_longhorn
+#      changed_when: "'STATUS: deployed' in install_longhorn.stdout"
+#    - name: Wait for longhorn
+#      command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n longhorn-system \
+#        get deploy longhorn-driver-deployer \
+#        -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+#      changed_when: false
+#      register: kubectl_get_longhorn
+#      delay: 5
+#      retries: 40
+#      until: "'True' in kubectl_get_longhorn.stdout"
