@@ -10,7 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        scenario: [ 'calibreweb', 'nextcloud' ]
+        scenario: [ 'calibreweb', 'gitea', 'nextcloud' ]
     env:
       MOLECULE_SCENARIO: ${{ matrix.scenario }}
     steps:
