@@ -10,6 +10,6 @@
 The Kustomize resources are grouped by standalone modules.
 Each module is composed of a base, additional components and overlays.
 
-- calibreweb
-- gitea
-- nextcloud
+- [calibreweb](modules/calibreweb)
+- [gitea](modules/gitea)
+- [nextcloud](modules/nextcloud)
