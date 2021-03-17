@@ -1,9 +1,9 @@
 ---
 
-- name: test-claimed-volumes - apply
+- name: test-redis-ingress-traefik - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-claimed-volumes \
+    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-redis-ingress-traefik \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -11,9 +11,9 @@
   register: apply_manifest
   changed_when: false
 
-- name: test-claimed-volumes - wait for nextcloud
+- name: test-redis-ingress-traefik - wait for nextcloud
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-    get deploy tcv-nextcloud \
+    get deploy nextcloud -n test-redis-ingress-traefik \
     -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
   changed_when: false
   register: kubectl_get_nextcloud

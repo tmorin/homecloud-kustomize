@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-mariadb
+spec:
+  template:
+    spec:
+      containers:
+        - name: mariadb
+          livenessProbe:
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}" && ls /var/lib/mysql/lost+found

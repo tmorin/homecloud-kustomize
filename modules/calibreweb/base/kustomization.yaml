@@ -3,9 +3,11 @@ kind: Kustomization
 commonLabels:
   kustomize.morin.io/module: calibreweb
   kustomize.morin.io/version: 0.1.0-alpha.0
+
 resources:
   - deployment.yaml
   - service.yaml
+
 configMapGenerator:
   - name: calibreweb
     envs:

@@ -1,0 +1,6 @@
+- op: add
+  path: /spec/template/spec/containers/0/envFrom/-1
+  value:
+    secretRef:
+      name: common
+      optional: false

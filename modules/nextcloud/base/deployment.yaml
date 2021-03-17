@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nextcloud
+  name: nextcloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+        - name: nextcloud
+          image: nextcloud:stable
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: $(PUBLIC_DOMAIN)
+          envFrom:
+            - configMapRef:
+                name: common
+                optional: false
+            - configMapRef:
+                name: nextcloud
+                optional: false
+            - secretRef:
+                name: nextcloud
+                optional: false
+          volumeMounts:
+            - name: data
+              mountPath: /var/www/html
+            - name: dnas
+              mountPath: /mnt/dnas
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            exec:
+              command:
+                - bash
+                - -c
+                - curl -fH host:${PUBLIC_DOMAIN} http://localhost/status.php
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            exec:
+              command:
+                - bash
+                - -c
+                - curl -fH host:${PUBLIC_DOMAIN} http://localhost/status.php
+      volumes:
+        - name: data
+          emptyDir: { }
+        - name: dnas
+          emptyDir: { }

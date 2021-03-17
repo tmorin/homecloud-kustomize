@@ -3,5 +3,6 @@
 - hosts: localhost
   tasks:
     - include_tasks: ./converge/test-claimed-volumes.yml
-    - include_tasks: ./converge/test-ingress-traefik.yml
-    #- include_tasks: ./converge/test-longhorn-mounts-checker.yml
+    - include_tasks: ./converge/test-redis-ingress-traefik.yml
+    - include_tasks: ./converge/test-mariadb-claimed-volumes.yml
+  #- include_tasks: ./converge/test-longhorn-mounts.yml

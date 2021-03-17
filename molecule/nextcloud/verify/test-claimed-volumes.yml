@@ -18,9 +18,7 @@
   assert:
     quiet: true
     that:
-      - "'[tcv-nextcloud-database Bound standard]' in get_pv.stdout"
       - "'[tcv-nextcloud-dnas Bound standard]' in get_pv.stdout"
-      - "'[tcv-nextcloud-server Bound standard]' in get_pv.stdout"
-      - "'[tcv-nextcloud-database Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-data Bound standard]' in get_pv.stdout"
       - "'[tcv-nextcloud-dnas Bound]' in get_pvc.stdout"
-      - "'[tcv-nextcloud-server Bound]' in get_pvc.stdout"
+      - "'[tcv-nextcloud-data Bound]' in get_pvc.stdout"

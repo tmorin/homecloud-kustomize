@@ -19,7 +19,7 @@ spec:
               command:
                 - sh
                 - -c
-                - curl -sH host:$(PUBLIC_DOMAIN) http://$(SERVICE_SERVER_NAME)/cron.php
+                - curl -sH host:$(PUBLIC_DOMAIN) http://$(SERVICE_NEXTCLOUD_NAME)/cron.php
           initContainers:
             - name: wait-for-nextcloud
               image: curlimages/curl
@@ -27,4 +27,4 @@ spec:
               command:
                 - sh
                 - -c
-                - until curl -sfH host:$(PUBLIC_DOMAIN) http://$(SERVICE_SERVER_NAME)/status.php; do echo waiting for server; sleep 2; done
+                - until curl -sfH host:$(PUBLIC_DOMAIN) http://$(SERVICE_NEXTCLOUD_NAME)/status.php; do echo waiting for server; sleep 2; done

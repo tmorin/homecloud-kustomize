@@ -1,0 +1,26 @@
+---
+
+- name: test-longhorn-mounts-checker - get pv
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pv \
+    -ojsonpath="{range .items[*]}[{.spec.claimRef.name} {.status.phase} {.spec.storageClassName}] {end}"
+  args:
+    warn: false
+  register: get_pv
+
+- name: test-longhorn-mounts-checker - get pvc
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pvc \
+    -ojsonpath="{range .items[*]}[{.metadata.name} {.status.phase}] {end}"
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-longhorn-mounts-checker - assert
+  assert:
+    quiet: true
+    that:
+      - "'[nextcloud-mariadb-data Bound longhorn]' in get_pv.stdout"
+      - "'[nextcloud-dnas Bound standard]' in get_pv.stdout"
+      - "'[nextcloud-server Bound longhorn]' in get_pv.stdout"
+      - "'[nextcloud-mariadb-data Bound]' in get_pvc.stdout"
+      - "'[nextcloud-dnas Bound]' in get_pvc.stdout"
+      - "'[nextcloud-server Bound]' in get_pvc.stdout"

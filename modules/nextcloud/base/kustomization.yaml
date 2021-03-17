@@ -10,55 +10,34 @@ vars:
     objref:
       kind: ConfigMap
       version: v1
-      name: nextcloud-common
+      name: common
     fieldref:
       fieldpath: data.PUBLIC_DOMAIN
-  - name: SERVICE_SERVER_NAME
+  - name: SERVICE_NEXTCLOUD_NAME
     objref:
       kind: Service
       version: v1
-      name: nextcloud-server
-    fieldref:
-      fieldpath: metadata.name
-  - name: SERVICE_DATABASE_NAME
-    objref:
-      kind: Service
-      version: v1
-      name: nextcloud-database
-    fieldref:
-      fieldpath: metadata.name
-  - name: SERVICE_CACHE_NAME
-    objref:
-      kind: Service
-      version: v1
-      name: nextcloud-cache
+      name: nextcloud
     fieldref:
       fieldpath: metadata.name
 
 resources:
   - cronjob.yaml
-  - deployment-cache.yaml
-  - deployment-database.yaml
-  - deployment-server.yaml
-  - service-cache.yaml
-  - service-database.yaml
-  - service-server.yaml
+  - deployment.yaml
+  - service.yaml
 
 configMapGenerator:
-  - name: nextcloud-server
+  - name: nextcloud
     envs:
-      - configmap-server.env
-  - name: nextcloud-common
+      - configmap-nextcloud.env
+  - name: common
     envs:
       - configmap-common.env
 
 secretGenerator:
-  - name: nextcloud-server
-    envs:
-      - secret-server.env
-  - name: nextcloud-common
+  - name: common
     envs:
       - secret-common.env
-  - name: nextcloud-database
+  - name: nextcloud
     envs:
-      - secret-database.env
+      - secret-server.env
