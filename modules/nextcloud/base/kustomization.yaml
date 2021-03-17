@@ -1,10 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 commonLabels:
   kustomize.morin.io/module: nextcloud
-  kustomize.morin.io/version: 0.1.0-alpha.0
-
+  kustomize.morin.io/version: 0.1.0
 vars:
   - name: PUBLIC_DOMAIN
     objref:
@@ -20,12 +18,10 @@ vars:
       name: nextcloud
     fieldref:
       fieldpath: metadata.name
-
 resources:
   - cronjob.yaml
   - deployment.yaml
   - service.yaml
-
 configMapGenerator:
   - name: nextcloud
     envs:
@@ -33,7 +29,6 @@ configMapGenerator:
   - name: common
     envs:
       - configmap-common.env
-
 secretGenerator:
   - name: common
     envs:
