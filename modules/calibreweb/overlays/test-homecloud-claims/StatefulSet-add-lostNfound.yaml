@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: calibreweb
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: create-lost-n-found
+          image: busybox
+          command:
+            - sh
+            - -c
+            - mkdir /config/lost+found
+          volumeMounts:
+            - name: config
+              mountPath: /config

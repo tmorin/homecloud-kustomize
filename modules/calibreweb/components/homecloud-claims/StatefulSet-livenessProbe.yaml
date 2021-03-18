@@ -12,4 +12,4 @@ spec:
               command:
                 - /bin/bash
                 - -ec
-                - curl -f http://localhost:8083 && ls /config/lost+found
+                - curl -if http://localhost:8083 && ls /config/lost+found

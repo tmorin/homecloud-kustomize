@@ -39,14 +39,14 @@ spec:
               command:
                 - /bin/bash
                 - -ec
-                - curl -f http://localhost:8083
+                - curl -if http://localhost:8083
           readinessProbe:
             initialDelaySeconds: 5
             exec:
               command:
                 - /bin/bash
                 - -ec
-                - curl -f http://localhost:8083
+                - curl -if http://localhost:8083
       volumes:
         - name: config
           emptyDir: { }

@@ -1,4 +1,8 @@
 ports:
+  traefik:
+    nodePort: 30900
+    expose: true
+    exposedPort: 9000
   web:
     nodePort: 32080
     redirectTo: websecure
@@ -7,6 +11,18 @@ ports:
     tls:
       enabled: true
       certResolver: le
+  netbios-ss:
+    nodePort: 30139
+    port: 30139
+    exposedPort: 139
+    expose: true
+    protocol: TCP
+  microsoft-ds:
+    nodePort: 30445
+    port: 30445
+    exposedPort: 445
+    expose: true
+    protocol: TCP
 additionalArguments:
   - "--certificatesresolvers.le.acme.httpchallenge=true"
   - "--certificatesresolvers.le.acme.httpchallenge.entrypoint=web"

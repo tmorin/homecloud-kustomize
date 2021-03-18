@@ -1,0 +1,22 @@
+---
+
+- name: test-homecloud-claims - apply
+  shell: |
+    set -eo pipefail
+    /tmp/hck/kustomize build ../../modules/calibreweb/overlays/test-homecloud-claims \
+      | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
+  args:
+    executable: /bin/bash
+    warn: false
+  register: apply_manifest
+  changed_when: false
+
+- name: test-homecloud-claims - wait for calibreweb
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n homecloud \
+    get statefulsets.apps calibreweb \
+    -o jsonpath='{.status.readyReplicas}'
+  changed_when: false
+  register: kubectl_get_calibreweb
+  delay: 3
+  retries: 40
+  until: "'1' in kubectl_get_calibreweb.stdout"

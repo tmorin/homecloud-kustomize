@@ -1,0 +1,112 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: homecloud
+---
+apiVersion: v1
+data:
+  password: ZG5hcw==
+  username: ZG5hcw==
+kind: Secret
+metadata:
+  name: dnas-smb
+  namespace: homecloud
+type: Opaque
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: dnas-smb
+  name: dnas-smb
+  namespace: homecloud
+spec:
+  ports:
+    - name: netbios-ss
+      port: 139
+      protocol: TCP
+      targetPort: netbios-ss
+    - name: microsoft-ds
+      port: 445
+      protocol: TCP
+      targetPort: microsoft-ds
+  selector:
+    app: dnas-smb
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: dnas-smb
+  name: dnas-smb
+  namespace: homecloud
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dnas-smb
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: dnas-smb
+    spec:
+      containers:
+        - env:
+            - name: AVAHI_NAME
+              value: dnas-smb.local
+            - name: ACCOUNT_dnas
+              value: dnas
+            - name: UID_dnas
+              value: "1000"
+            - name: SAMBA_VOLUME_CONFIG_dnas
+              value: '[dnas]; path = /shares/dnas;'
+          image: servercontainers/samba
+          name: samba
+          ports:
+            - containerPort: 139
+              name: netbios-ss
+              protocol: TCP
+            - containerPort: 445
+              name: microsoft-ds
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /shares/dnas
+              name: dnas
+      volumes:
+        - hostPath:
+            path: /tmp/
+            type: Directory
+          name: dnas
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: dnas-smb-microsoft-ds
+  namespace: homecloud
+spec:
+  entryPoints:
+    - microsoft-ds
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: dnas-smb
+          port: 445
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: dnas-smb-netbios-ss
+  namespace: homecloud
+spec:
+  entryPoints:
+    - netbios-ss
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: dnas-smb
+          port: 139
+---

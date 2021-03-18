@@ -84,6 +84,15 @@
           - containerPort: 32443
             hostPort: 32443
             protocol: TCP
+          - containerPort: 30900
+            hostPort: 30900
+            protocol: TCP
+          - containerPort: 30139
+            hostPort: 30139
+            protocol: TCP
+          - containerPort: 30445
+            hostPort: 30445
+            protocol: TCP
         EOF
       changed_when: false
 
@@ -96,7 +105,8 @@
       when: "'traefik' not in list_charts.stdout"
       shell: |
         set -eo pipefail
-        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo add traefik https://helm.traefik.io/traefik
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo add traefik \
+          https://helm.traefik.io/traefik
         /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo update
         /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} install traefik traefik/traefik \
           -n kube-system \
@@ -114,6 +124,62 @@
       delay: 2
       retries: 40
       until: "'True' in kubectl_get_traefik.stdout"
+
+- hosts: localhost
+  tasks:
+    - name: Install csi-driver-smb - install dependencies
+      shell: |
+        docker exec {{ kind_cluster_name }}-control-plane apt update
+        docker exec {{ kind_cluster_name }}-control-plane apt install -y open-iscsi nfs-common cifs-utils
+      args:
+        executable: /bin/bash
+      changed_when: false
+    - name: Install csi-driver-smb - list installed charts
+      command: /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} -n kube-system list -q
+      register: list_charts
+    - name: Install csi-driver-smb - install chart
+      when: "'csi-driver-smb' not in list_charts.stdout"
+      shell: |
+        set -eo pipefail
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo add csi-driver-smb \
+          https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo update
+        /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} install csi-driver-smb csi-driver-smb/csi-driver-smb \
+          --namespace kube-system
+      args:
+        executable: /bin/bash
+      register: install_cifs_driver
+      changed_when: "'STATUS: deployed' in install_cifs_driver.stdout"
+    - name: Wait for csi-driver-smb
+      command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n kube-system \
+        get deploy csi-smb-controller \
+        -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+      changed_when: false
+      register: kubectl_get_cifs_driver
+      delay: 2
+      retries: 40
+      until: "'True' in kubectl_get_cifs_driver.stdout"
+
+- hosts: localhost
+  tasks:
+    - name: Install dnas - apply manifest
+      shell: |
+        set -eo pipefail
+        /tmp/hck/kubectl apply -f ../files/dnas-smb.yaml
+      args:
+        executable: /bin/bash
+        warn: false
+      register: apply_manifest
+      changed_when: false
+    - name: Install dnas - wait for dnas
+      command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n homecloud \
+        get deploy dnas-smb \
+        -o jsonpath='{.status.readyReplicas}'
+      changed_when: false
+      register: kubectl_get_dnas
+      delay: 3
+      retries: 40
+      until: "'1' in kubectl_get_dnas.stdout"
 
 # Longhorn cannot work on KinD
 #- hosts: localhost
