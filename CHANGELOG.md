@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/tmorin/homecloud-kustomize/compare/v0.1.0...v0.1.1) (2021-03-18)
+
+
+### Features
+
+* **calibreweb:** replace the Deployment manifest by a StatefulSet one ([3fd2c33](https://github.com/tmorin/homecloud-kustomize/commit/3fd2c336dee2b39673ae178ddae2cb096e735fbc))
+* **gitea:** replace the Deployment manifest by a StatefulSet one ([0fc3e52](https://github.com/tmorin/homecloud-kustomize/commit/0fc3e52aed1a5e8f022c7e45c97a1467074c8d25))
+* **nextcloud:** replace the Deployment manifest by a StatefulSet one ([a774aca](https://github.com/tmorin/homecloud-kustomize/commit/a774aca44e73df8787050e88fbbf79e81809ce32))
+
 ## 0.1.0 (2021-03-17)
 
 
