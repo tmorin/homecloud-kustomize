@@ -3,7 +3,7 @@
 - name: test-longhorn-mounts-checker - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/calibreweb/overlays/test-longhorn-mounts-checker \
+    /tmp/hck/kustomize build ../../modules/calibreweb/overlays/test-longhorn-mounts \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -12,8 +12,9 @@
   changed_when: false
 
 - name: test-longhorn-mounts-checker - wait for calibreweb
-  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get deploy tlmc-calibreweb \
-    -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
+    get statefulsets.apps tlmc-calibreweb \
+    -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_calibreweb
   delay: 3

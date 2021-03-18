@@ -5,8 +5,13 @@
 [calibre-web]: https://github.com/janeczku/calibre-web
 [homecloud]: https://github.com/tmorin/homecloud-ansible
 
+## Base
+
+Deploy a StatefulSet which embeds the calibre-web monolith.
+
 ## Components
 
-- [claimed-volumes](components/claimed-volumes) transforms the data volume declaration to a claimed volume
-- [ingress-traefik](components/ingress-traefik) add an IngressRoute managed by Traefik
-- [longhorn-mounts](components/longhorn-mounts) enhances the liveness probe with a check on the mounted data volume
+- [claim-templates](components/claim-templates) replaces the `emptyDir` volumes by `volumeClaimTemplates` entries
+- [claimed-volumes](components/claimed-volumes) replaces the `emptyDir` volumes by `persistentVolumeClaim` entries
+- [ingressroute-traefik](components/ingressroute-traefik) add an IngressRoute managed by Traefik
+- [longhorn-mounts](components/longhorn-mounts) enhances the liveness probe with a check on the volume config

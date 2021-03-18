@@ -4,9 +4,9 @@ namePrefix: tlmc-
 
 resources:
   - ../../base
-  - pvc-calibreweb-config.yaml
-  - pvc-calibreweb-books.yaml
+  - PVC-calibreweb-config.yaml
+  - PVC-calibreweb-books.yaml
 
 components:
   - ../../components/claimed-volumes
-  - ../../components/longhorn-mounts-checker
+  - ../../components/longhorn-mounts

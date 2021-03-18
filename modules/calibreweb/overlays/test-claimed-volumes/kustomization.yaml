@@ -4,8 +4,8 @@ namePrefix: tcv-
 
 resources:
   - ../../base
-  - pvc-calibreweb-books.yaml
-  - pvc-calibreweb-config.yaml
+  - PVC-calibreweb-books.yaml
+  - PVC-calibreweb-config.yaml
 
 components:
   - ../../components/claimed-volumes

@@ -1,16 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: calibreweb
   name: calibreweb
 spec:
+  serviceName: calibreweb
+  podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
       app: calibreweb
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
