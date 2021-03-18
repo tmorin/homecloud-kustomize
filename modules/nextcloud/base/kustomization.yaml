@@ -19,9 +19,9 @@ vars:
     fieldref:
       fieldpath: metadata.name
 resources:
-  - cronjob.yaml
-  - deployment.yaml
-  - service.yaml
+  - CronJob.yaml
+  - StatefulSet.yaml
+  - Service.yaml
 configMapGenerator:
   - name: nextcloud
     envs:

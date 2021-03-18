@@ -2,7 +2,9 @@
 
 - hosts: localhost
   tasks:
+    - include_tasks: ./converge/test-claim-templates.yml
     - include_tasks: ./converge/test-claimed-volumes.yml
     - include_tasks: ./converge/test-redis-ingress-traefik.yml
+    - include_tasks: ./converge/test-mariadb-claim-templates.yml
     - include_tasks: ./converge/test-mariadb-claimed-volumes.yml
   #- include_tasks: ./converge/test-longhorn-mounts.yml

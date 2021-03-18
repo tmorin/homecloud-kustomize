@@ -1,15 +1,15 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: nextcloud-mariadb
+  name: nextcloud
 spec:
   template:
     spec:
       containers:
-        - name: mariadb
+        - name: nextcloud
           livenessProbe:
             exec:
               command:
                 - /bin/bash
                 - -ec
-                - mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}" && ls /var/lib/mysql/lost+found
+                - curl -fH host:${PUBLIC_DOMAIN} http://localhost/status.php && ls /var/www/html/lost+found

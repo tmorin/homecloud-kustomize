@@ -3,7 +3,7 @@
 - name: test-longhorn-mounts-checker - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-longhorn-mounts-checker \
+    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-longhorn-mounts \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -13,10 +13,10 @@
 
 - name: test-longhorn-mounts-checker - wait for nextcloud
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-    get deploy tlmc-nextcloud \
-    -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+    get statefulsets.apps tlmc-nextcloud \
+    -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_nextcloud
   delay: 5
   retries: 60
-  until: "'True' in kubectl_get_nextcloud.stdout"
+  until: "'1' in kubectl_get_nextcloud.stdout"

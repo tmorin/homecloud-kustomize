@@ -11,8 +11,8 @@ vars:
       fieldpath: metadata.name
 
 resources:
-  - deployment-redis.yaml
-  - service-redis.yaml
+  - StatefulSet-redis.yaml
+  - Service-redis.yaml
 
 patchesStrategicMerge:
-  - deployment-env.yaml
+  - StatefulSet-env.yaml

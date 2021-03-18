@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: nextcloud
 spec:
@@ -8,5 +8,5 @@ spec:
       containers:
         - name: nextcloud
           env:
-            - name: REDIS_HOST
-              value: $(SERVICE_REDIS_NAME)
+            - name: MYSQL_HOST
+              value: $(SERVICE_MARIADB_NAME)

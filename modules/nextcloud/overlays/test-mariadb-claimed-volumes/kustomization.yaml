@@ -5,9 +5,9 @@ namespace: test-mariadb-claimed-volumes
 resources:
   - namespace.yaml
   - ../../base
-  - pvc-nextcloud-data.yaml
-  - pvc-nextcloud-dnas.yaml
-  - pvc-nextcloud-mariadb-data.yaml
+  - PVC-nextcloud-data.yaml
+  - PVC-nextcloud-dnas.yaml
+  - PVC-nextcloud-mariadb-data.yaml
 
 components:
   - ../../components/claimed-volumes

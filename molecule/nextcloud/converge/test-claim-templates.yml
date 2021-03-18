@@ -1,9 +1,9 @@
 ---
 
-- name: test-claimed-volumes - apply
+- name: test-claim-templates - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-claimed-volumes \
+    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-claim-templates \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -11,12 +11,12 @@
   register: apply_manifest
   changed_when: false
 
-- name: test-claimed-volumes - wait for nextcloud
+- name: test-claim-templates - wait for nextcloud
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-    get statefulsets.apps tcv-nextcloud \
+    get statefulsets.apps tct-nextcloud \
     -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_nextcloud
-  delay: 5
-  retries: 60
+  delay: 3
+  retries: 40
   until: "'1' in kubectl_get_nextcloud.stdout"

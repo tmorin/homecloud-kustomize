@@ -1,16 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: nextcloud
   name: nextcloud
 spec:
+  serviceName: nextcloud
+  podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
       app: nextcloud
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:

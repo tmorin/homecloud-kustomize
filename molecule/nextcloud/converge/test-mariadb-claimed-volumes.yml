@@ -13,10 +13,10 @@
 
 - name: mariadb-claimed-volumes - wait for nextcloud
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-    get deploy nextcloud -n test-mariadb-claimed-volumes \
-    -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+    get statefulsets.apps nextcloud -n test-mariadb-claimed-volumes \
+    -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_nextcloud
   delay: 5
   retries: 60
-  until: "'True' in kubectl_get_nextcloud.stdout"
+  until: "'1' in kubectl_get_nextcloud.stdout"

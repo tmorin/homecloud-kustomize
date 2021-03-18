@@ -4,9 +4,9 @@ namePrefix: tlmc-
 
 resources:
   - ../../base
-  - pvc-database.yaml
-  - pvc-dnas.yaml
-  - pvc-server.yaml
+  - PVC-database.yaml
+  - PVC-dnas.yaml
+  - PVC-server.yaml
 
 components:
   - ../../components/claimed-volumes

@@ -11,12 +11,12 @@ vars:
       fieldpath: metadata.name
 
 resources:
-  - deployment-mariadb.yaml
-  - service-mariadb.yaml
+  - StatefulSet-mariadb.yaml
+  - Service-mariadb.yaml
 
 patchesStrategicMerge:
-  - deployment-initContainers.yaml
-  - deployment-env.yaml
+  - StatefulSet-initContainers.yaml
+  - StatefulSet-env.yaml
 
 patchesJson6902:
   - target:
@@ -24,7 +24,7 @@ patchesJson6902:
       name: nextcloud
       version: v1
       group: apps
-    path: deployment-envFrom.yaml
+    path: StatefulSet-envFrom.yaml
 
 configMapGenerator:
   - name: common

@@ -4,8 +4,8 @@ namePrefix: tcv-
 
 resources:
   - ../../base
-  - pvc-nextcloud-data.yaml
-  - pvc-nextcloud-dnas.yaml
+  - PVC-nextcloud-data.yaml
+  - PVC-nextcloud-dnas.yaml
 
 components:
   - ../../components/claimed-volumes

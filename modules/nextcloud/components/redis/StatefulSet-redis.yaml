@@ -1,16 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: nextcloud-redis
   name: nextcloud-redis
 spec:
+  serviceName: nextcloud-redis
+  podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
       app: nextcloud-redis
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
