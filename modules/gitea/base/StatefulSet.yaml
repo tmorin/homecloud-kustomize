@@ -1,16 +1,16 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: gitea
   name: gitea
 spec:
+  serviceName: gitea
+  podManagementPolicy: OrderedReady
   replicas: 1
   selector:
     matchLabels:
       app: gitea
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:

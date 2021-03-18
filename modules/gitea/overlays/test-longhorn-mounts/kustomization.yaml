@@ -4,8 +4,8 @@ namePrefix: tlmc-
 
 resources:
   - ../../base
-  - pvc-gitea-data.yaml
+  - PVC-gitea-data.yaml
 
 components:
   - ../../components/claimed-volumes
-  - ../../components/longhorn-mounts-checker
+  - ../../components/longhorn-mounts

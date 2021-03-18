@@ -1,9 +1,9 @@
 ---
 
-- name: test-claimed-volumes - apply
+- name: test-claim-templates - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/gitea/overlays/test-claimed-volumes \
+    /tmp/hck/kustomize build ../../modules/gitea/overlays/test-claim-templates \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -11,9 +11,9 @@
   register: apply_manifest
   changed_when: false
 
-- name: test-claimed-volumes - wait for gitea
+- name: test-claim-templates - wait for gitea
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-    get statefulsets.apps tcv-gitea \
+    get statefulsets.apps tct-gitea \
     -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_gitea

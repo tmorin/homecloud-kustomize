@@ -1,0 +1,22 @@
+---
+
+- name: test-claim-templates - get pv
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pv \
+    -ojsonpath="{range .items[*]}[{.spec.claimRef.name} {.status.phase} {.spec.storageClassName}] {end}"
+  args:
+    warn: false
+  register: get_pv
+
+- name: test-claim-templates - get pvc
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pvc \
+    -ojsonpath="{range .items[*]}[{.metadata.name} {.status.phase}] {end}"
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-claim-templates - assert
+  assert:
+    quiet: true
+    that:
+      - "'[data-tct-gitea-0 Bound standard]' in get_pv.stdout"
+      - "'[data-tct-gitea-0 Bound]' in get_pvc.stdout"

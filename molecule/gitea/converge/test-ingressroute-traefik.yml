@@ -1,9 +1,9 @@
 ---
 
-- name: test-ingress-traefik - apply
+- name: test-ingressroute-traefik - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/gitea/overlays/test-ingress-traefik \
+    /tmp/hck/kustomize build ../../modules/gitea/overlays/test-ingressroute-traefik \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -11,12 +11,12 @@
   register: apply_manifest
   changed_when: false
 
-- name: test-ingress-traefik - wait for gitea
+- name: test-ingressroute-traefik - wait for gitea
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-    get deploy gitea -n test-ingress-traefik \
-    -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+    get statefulsets.apps gitea -n test-ingressroute-traefik \
+    -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_gitea
   delay: 3
   retries: 40
-  until: "'True' in kubectl_get_gitea.stdout"
+  until: "'1' in kubectl_get_gitea.stdout"

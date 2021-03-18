@@ -12,8 +12,8 @@ vars:
     fieldref:
       fieldpath: data.DOMAIN
 resources:
-  - deployment.yaml
-  - service.yaml
+  - StatefulSet.yaml
+  - Service.yaml
 configMapGenerator:
   - name: gitea
     envs:

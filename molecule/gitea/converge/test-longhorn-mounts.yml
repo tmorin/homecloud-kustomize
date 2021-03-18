@@ -3,7 +3,7 @@
 - name: test-longhorn-mounts-checker - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/gitea/overlays/test-longhorn-mounts-checker \
+    /tmp/hck/kustomize build ../../modules/gitea/overlays/test-longhorn-mounts \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -12,10 +12,11 @@
   changed_when: false
 
 - name: test-longhorn-mounts-checker - wait for gitea
-  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get deploy tlmc-gitea \
-    -o jsonpath='{.status.conditions[?(@.type=="Available")].status}'
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
+    get statefulsets.apps tlmc-gitea \
+    -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_gitea
   delay: 3
   retries: 40
-  until: "'True' in kubectl_get_gitea.stdout"
+  until: "'1' in kubectl_get_gitea.stdout"
