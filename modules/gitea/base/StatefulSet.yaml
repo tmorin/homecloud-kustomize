@@ -40,14 +40,14 @@ spec:
               command:
                 - /bin/bash
                 - -ec
-                - curl -f http://localhost:3000/version
+                - curl -if http://localhost:3000/version
           readinessProbe:
             initialDelaySeconds: 5
             exec:
               command:
                 - /bin/bash
                 - -ec
-                - curl -f http://localhost:3000/version
+                - curl -if http://localhost:3000/version
       volumes:
         - name: data
           emptyDir: { }
