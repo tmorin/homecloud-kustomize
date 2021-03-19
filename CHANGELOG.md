@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/tmorin/homecloud-kustomize/compare/v0.1.1...v0.1.2) (2021-03-19)
+
+
+### Features
+
+* **calibreweb:** add the `homecloud-claims` component ([11e3c24](https://github.com/tmorin/homecloud-kustomize/commit/11e3c240925214869a50e84051ea447532d9eac3))
+* **gitea:** add the `homecloud-claims` component ([b977691](https://github.com/tmorin/homecloud-kustomize/commit/b9776912860c86a54fe809730672cfed64c43db0))
+* **nextcloud:** add the `homecloud-claims` component ([ed95051](https://github.com/tmorin/homecloud-kustomize/commit/ed95051f89e8d34e0ef63bdf10940664f26b4cdc))
+
 ### [0.1.1](https://github.com/tmorin/homecloud-kustomize/compare/v0.1.0...v0.1.1) (2021-03-18)
 
 
