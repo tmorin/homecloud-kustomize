@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nextcloud-dnas
+spec:
+  storageClassName: samba
+  capacity:
+    storage: 10Mi
+  accessModes:
+    - ReadWriteOnce
+    - ReadOnlyMany
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+    - vers=2.1
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: nextcloud-dnas
+    volumeAttributes:
+      source: //dnas-smb.homecloud.svc.cluster.local/dnas
+    nodeStageSecretRef:
+      name: dnas-smb
+      namespace: homecloud

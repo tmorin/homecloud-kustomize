@@ -1,0 +1,26 @@
+---
+
+- name: test-homecloud-claims - get pv
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pv \
+    -ojsonpath="{range .items[*]}[{.spec.claimRef.name} {.status.phase} {.spec.storageClassName}] {end}"
+  args:
+    warn: false
+  register: get_pv
+
+- name: test-homecloud-claims - get pvc
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pvc -n homecloud \
+    -ojsonpath="{range .items[*]}[{.metadata.name} {.status.phase}] {end}"
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-homecloud-claims - assert
+  assert:
+    quiet: true
+    that:
+      - "'[data-nextcloud-0 Bound standard]' in get_pv.stdout"
+      - "'[data-nextcloud-0 Bound]' in get_pvc.stdout"
+      - "'[dnas-nextcloud-0 Bound samba]' in get_pv.stdout"
+      - "'[dnas-nextcloud-0 Bound]' in get_pvc.stdout"
+      - "'[data-nextcloud-mariadb-0 Bound standard]' in get_pv.stdout"
+      - "'[data-nextcloud-mariadb-0 Bound]' in get_pvc.stdout"

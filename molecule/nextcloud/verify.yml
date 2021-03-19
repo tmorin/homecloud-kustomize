@@ -4,6 +4,7 @@
   tasks:
     - include_tasks: ./verify/test-claim-templates.yml
     - include_tasks: ./verify/test-claimed-volumes.yml
-    - include_tasks: ./verify/test-redis-ingress-traefik.yml
+    - include_tasks: ./verify/test-homecloud-claims.yml
     - include_tasks: ./verify/test-mariadb-claimed-volumes.yml
-    #- include_tasks: ./verify/test-longhorn-mounts.yml
+    - include_tasks: ./verify/test-mariadb-claim-templates.yml
+    - include_tasks: ./verify/test-redis-ingress-traefik.yml

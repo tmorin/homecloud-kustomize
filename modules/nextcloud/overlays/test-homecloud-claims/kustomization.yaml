@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: homecloud
+
+resources:
+  - ../../base
+  - PV-nextcloud-dnas.yaml
+
+components:
+  - ../../components/claimed-volumes
+  - ../../components/homecloud-claims
+  - ../../components/mariadb
+  - ../../components/mariadb-claimed-volumes
+  - ../../components/mariadb-homecloud-claims
+
+patchesStrategicMerge:
+  - StatefulSet-add-lostNfound.yaml
+  - StatefulSet-mariadb-add-lostNfound.yaml
+
+patchesJson6902:
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: nextcloud
+    path: StatefulSet-skip-longhorn.yaml
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: nextcloud-mariadb
+    path: StatefulSet-skip-longhorn.yaml

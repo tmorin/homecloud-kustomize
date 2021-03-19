@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nextcloud
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: create-lost-n-found
+          image: busybox
+          command:
+            - sh
+            - -c
+            - mkdir /data/lost+found
+          volumeMounts:
+            - name: data
+              mountPath: /data

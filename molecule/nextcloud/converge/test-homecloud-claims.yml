@@ -1,9 +1,9 @@
 ---
 
-- name: test-longhorn-mounts-checker - apply
+- name: test-homecloud-claims - apply
   shell: |
     set -eo pipefail
-    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-longhorn-mounts \
+    /tmp/hck/kustomize build ../../modules/nextcloud/overlays/test-homecloud-claims \
       | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
   args:
     executable: /bin/bash
@@ -11,12 +11,12 @@
   register: apply_manifest
   changed_when: false
 
-- name: test-longhorn-mounts-checker - wait for nextcloud
-  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
-    get statefulsets.apps tlmc-nextcloud \
+- name: test-homecloud-claims - wait for nextcloud
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} -n homecloud \
+    get statefulsets.apps nextcloud \
     -o jsonpath='{.status.readyReplicas}'
   changed_when: false
   register: kubectl_get_nextcloud
-  delay: 5
-  retries: 60
+  delay: 3
+  retries: 40
   until: "'1' in kubectl_get_nextcloud.stdout"
