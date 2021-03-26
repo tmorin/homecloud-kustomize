@@ -8,15 +8,10 @@ spec:
     storage: 10Mi
   accessModes:
     - ReadWriteOnce
-    - ReadOnlyMany
-    - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   mountOptions:
-    - dir_mode=0777
-    - file_mode=0777
-    - uid=1000
-    - gid=1000
-    - vers=2.1
+    - uid=33
+    - gid=33
   csi:
     driver: smb.csi.k8s.io
     readOnly: false

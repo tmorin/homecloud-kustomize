@@ -33,4 +33,4 @@ jobs:
 
       - name: Execute test scenario
         run: |
-          molecule test -s $MOLECULE_SCENARIO
+          /home/runner/.local/bin/molecule test -s $MOLECULE_SCENARIO
