@@ -9,9 +9,7 @@
     - name: Install /tmp/hck/kustomize
       shell: |
         set -eo pipefail
-        VERS=$(curl -w '%{url_effective}' -I -L -s \
-          -S https://github.com/kubernetes-sigs/kustomize/releases/latest \
-          -o /dev/null | sed -e 's|.*/||')
+        VERS="v4.0.5"
         curl -sfL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${VERS}/kustomize_${VERS}_linux_amd64.tar.gz | \
           tar xz -C /tmp/hck
         chmod +x /tmp/hck/kustomize

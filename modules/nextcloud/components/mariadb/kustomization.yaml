@@ -20,7 +20,7 @@ patchesStrategicMerge:
 
 patchesJson6902:
   - target:
-      kind: Deployment
+      kind: StatefulSet
       name: nextcloud
       version: v1
       group: apps
