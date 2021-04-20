@@ -6,12 +6,14 @@ spec:
   template:
     spec:
       initContainers:
-        - name: create-lost-n-found
+        - name: initialization
           image: busybox
           command:
             - sh
             - -c
-            - mkdir /config/lost+found
+            - mkdir -p /config/lost+found /dnas/syncthing/books
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: dnas
+              mountPath: /dnas

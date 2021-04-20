@@ -3,7 +3,7 @@ kind: Component
 
 patchesStrategicMerge:
   - StatefulSet-livenessProbe.yaml
-  - StatefulSet-add-claims.yaml
+  - StatefulSet-volumes.yaml
 
 patchesJson6902:
   - target:

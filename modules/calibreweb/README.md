@@ -13,5 +13,5 @@ Deploy a StatefulSet which embeds the calibre-web monolith.
 
 - [claim-templates](components/claim-templates) replaces the `emptyDir` volumes by `volumeClaimTemplates` entries
 - [claimed-volumes](components/claimed-volumes) replaces the `emptyDir` volumes by `persistentVolumeClaim` entries
-- [homecloud-claims](components/homecloud-claims) replaces the `emptyDir` according to homecloud opinion 
+- [homecloud-claims](modules/calibreweb/components/homecloud-volumes) configure the volumes for the reference homecloud deployment 
 - [ingressroute-traefik](components/ingressroute-traefik) add an IngressRoute managed by Traefik

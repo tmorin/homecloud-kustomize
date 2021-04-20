@@ -1,2 +1,0 @@
-- op: remove
-  path: /spec/volumeClaimTemplates/0/spec/storageClassName

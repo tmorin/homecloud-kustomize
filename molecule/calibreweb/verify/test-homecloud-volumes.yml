@@ -6,6 +6,8 @@
   args:
     warn: false
   register: get_pv
+- debug:
+    var: get_pv
 
 - name: test-homecloud-claims - get pvc
   command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} get pvc -n homecloud \
@@ -13,12 +15,14 @@
   args:
     warn: false
   register: get_pvc
+- debug:
+    var: get_pvc
 
 - name: test-homecloud-claims - assert
   assert:
     quiet: true
     that:
-      - "'[config-calibreweb-0 Bound standard]' in get_pv.stdout"
-      - "'[books-calibreweb-0 Bound samba]' in get_pv.stdout"
-      - "'[config-calibreweb-0 Bound]' in get_pvc.stdout"
-      - "'[books-calibreweb-0 Bound]' in get_pvc.stdout"
+      - "'[hc-calibreweb-config Bound standard]' in get_pv.stdout"
+      - "'[hc-calibreweb-dnas Bound samba]' in get_pv.stdout"
+      - "'[hc-calibreweb-config Bound]' in get_pvc.stdout"
+      - "'[hc-calibreweb-dnas Bound]' in get_pvc.stdout"
