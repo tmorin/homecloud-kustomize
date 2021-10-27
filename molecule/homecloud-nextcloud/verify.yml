@@ -1,0 +1,5 @@
+---
+
+- hosts: localhost
+  tasks:
+    - include_tasks: ./verify/test-ingressroute-traefik.yml

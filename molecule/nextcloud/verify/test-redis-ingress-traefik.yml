@@ -1,7 +1,0 @@
----
-
-- name: test-redis-ingress-traefik - curl
-  command: curl -fkH host:nextcloud.home.cloud https://localhost:32443
-  changed_when: false
-  args:
-    warn: false

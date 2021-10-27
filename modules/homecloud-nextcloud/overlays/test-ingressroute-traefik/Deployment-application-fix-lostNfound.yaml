@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-application
+spec:
+  template:
+    spec:
+      containers:
+        - name: nextcloud
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            exec:
+              command:
+                - bash
+                - -c
+                - curl -fH host:${PUBLIC_DOMAIN} http://localhost/status.php

@@ -1,0 +1,5 @@
+---
+
+- hosts: localhost
+  tasks:
+    - include_tasks: ./converge/test-ingressroute-traefik.yml

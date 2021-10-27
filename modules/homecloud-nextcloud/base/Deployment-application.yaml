@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nextcloud-application
+  name: nextcloud-application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-application
+  template:
+    metadata:
+      labels:
+        app: nextcloud-application
+    spec:
+      initContainers:
+        - name: wait-for-database
+          image: mariadb:10
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_HOST
+              value: $(SERVICE_DATABASE_NAME)
+          envFrom:
+            - configMapRef:
+                name: common
+                optional: false
+            - secretRef:
+                name: common
+                optional: false
+          command:
+            - sh
+            - -c
+            - until mysql --host=${MYSQL_HOST} --user=${MYSQL_USER} --password=${MYSQL_PASSWORD} --execute='SELECT 1;'; do echo waiting for database; sleep 2; done;
+      containers:
+        - name: nextcloud
+          image: nextcloud:stable
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: nextcloud
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: $(PUBLIC_DOMAIN)
+            - name: REDIS_HOST
+              value: $(SERVICE_CACHE_NAME)
+            - name: MYSQL_HOST
+              value: $(SERVICE_DATABASE_NAME)
+          envFrom:
+            - configMapRef:
+                name: common
+                optional: false
+            - configMapRef:
+                name: application
+                optional: false
+            - secretRef:
+                name: application
+                optional: false
+          volumeMounts:
+            - name: application
+              mountPath: /var/www/html
+            - name: dnas
+              mountPath: /mnt/dnas
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            exec:
+              command:
+                - bash
+                - -c
+                - curl -fH host:${PUBLIC_DOMAIN} http://localhost/status.php && ls /var/www/html/lost+found
+          readinessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            exec:
+              command:
+                - bash
+                - -c
+                - curl -ifH host:${PUBLIC_DOMAIN} http://localhost/status.php
+      volumes:
+        - name: application
+          persistentVolumeClaim:
+            claimName: nextcloud-application
+        - name: dnas
+          persistentVolumeClaim:
+            claimName: nextcloud-dnas
