@@ -28,7 +28,7 @@
     }
   },
   "dependencies": {
-    "standard-version": "^9.1.1",
+    "standard-version": "^9.3.2",
     "yaml": "^1.10.0"
   }
 }
