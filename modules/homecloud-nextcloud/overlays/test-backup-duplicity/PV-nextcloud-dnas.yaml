@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: calibreweb-books
+  name: nextcloud-dnas
 spec:
   storageClassName: samba
   capacity:
@@ -15,7 +15,7 @@ spec:
   csi:
     driver: smb.csi.k8s.io
     readOnly: false
-    volumeHandle: calibreweb-books
+    volumeHandle: nextcloud-dnas
     volumeAttributes:
       source: //dnas-smb.homecloud.svc.cluster.local/dnas
     nodeStageSecretRef:

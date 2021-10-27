@@ -1,14 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: test-ingressroute-traefik
+namespace: test-backup-duplicity
 resources:
   - namespace.yaml
+  - PV-nextcloud-dnas.yaml
   - PVC-nextcloud-application.yaml
   - PVC-nextcloud-database.yaml
   - PVC-nextcloud-dnas.yaml
   - ../../base
 components:
-  - ../../components/ingressroute-traefik
+  - ../../components/backup-duplicity
 patchesStrategicMerge:
   - Deployment-application-fix-lostNfound.yaml
   - Deployment-database-add-lostNfound.yaml

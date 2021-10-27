@@ -145,7 +145,7 @@
           https://raw.githubusercontent.com/kubernetes-csi/csi-driver-smb/master/charts
         /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} repo update
         /tmp/hck/helm --kube-context kind-{{ kind_cluster_name }} install csi-driver-smb csi-driver-smb/csi-driver-smb \
-          --namespace kube-system
+          --namespace kube-system --version v1.3.0
       args:
         executable: /bin/bash
       register: install_cifs_driver

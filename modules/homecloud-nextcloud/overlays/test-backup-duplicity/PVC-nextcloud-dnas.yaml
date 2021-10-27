@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: calibreweb-books
+  name: nextcloud-dnas
 spec:
-  volumeName: calibreweb-books
+  volumeName: nextcloud-dnas
   storageClassName: samba
   accessModes:
     - ReadWriteMany

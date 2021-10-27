@@ -1,0 +1,21 @@
+---
+
+- name: test-backup-duplicity - get pvc
+  command: |
+    /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
+    get -n test-backup-duplicity pvc \
+    -ojsonpath="{range .items[*]}{.metadata.name} {.status.phase} {end}"
+  args:
+    warn: false
+  register: get_pvc
+
+- debug:
+    var: get_pvc
+
+- name: test-backup-duplicity - assert
+  assert:
+    quiet: true
+    that:
+      - "'nextcloud-application Bound' in get_pvc.stdout"
+      - "'nextcloud-database Bound' in get_pvc.stdout"
+      - "'nextcloud-dnas Bound' in get_pvc.stdout"

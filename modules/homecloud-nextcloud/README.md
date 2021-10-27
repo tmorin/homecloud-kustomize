@@ -9,15 +9,11 @@
 
 Deploy a set of Deployments which embeds the Nextcloud monolith, a MariaDB database and a Redis instance.
 
-## Volumes
+The setup relies on three Persistent Volume Claims expected the following volumes:
 
-The setup relies on three Persistent Volume Claims:
-
-- `nextcloud-application` : the volume which contains the Nextcloud resources
-- `nextcloud-database` : the volume which contains the database files
-- `nextcloud-dnas` : should be a SAMBA share of the Decentralized NAS
-
-## Configuration
+- `nextcloud-application` : a _RWO_ volume to hosts the Nextcloud resources
+- `nextcloud-database` : a _RWO_ volume to hosts the Nextcloud database
+- `nextcloud-dnas` : a _RWX_ volume which should be a SAMBA share of the Decentralized NAS
 
 Configuration Map:
 
@@ -30,3 +26,8 @@ Secrets:
 - [Secret-application.env](./base/Secret-application.env)
 - [Secret-common.env](./base/Secret-common.env)
 - [Secret-database.env](./base/Secret-database.env)
+
+## Components
+
+- [backup-duplicity](components/backup-duplicity) handles daily backup of the Nextcloud database with Duplicity
+- [ingressroute-traefik](components/ingressroute-traefik) add an IngressRoute managed by Traefik

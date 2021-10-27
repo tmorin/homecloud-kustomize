@@ -64,7 +64,6 @@ spec:
               mountPath: /mnt/dnas
           livenessProbe:
             initialDelaySeconds: 10
-            periodSeconds: 5
             exec:
               command:
                 - bash
@@ -72,7 +71,6 @@ spec:
                 - curl -fH host:${PUBLIC_DOMAIN} http://localhost/status.php && ls /var/www/html/lost+found
           readinessProbe:
             initialDelaySeconds: 10
-            periodSeconds: 5
             exec:
               command:
                 - bash

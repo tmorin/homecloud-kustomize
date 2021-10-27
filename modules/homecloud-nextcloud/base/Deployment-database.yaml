@@ -33,14 +33,14 @@ spec:
                 name: database
                 optional: false
           livenessProbe:
+            initialDelaySeconds: 5
             exec:
               command:
                 - /bin/bash
                 - -ec
                 - mysqladmin status -uroot -p"${MYSQL_ROOT_PASSWORD}" && ls /var/lib/mysql/lost+found
           readinessProbe:
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            initialDelaySeconds: 5
             exec:
               command:
                 - /bin/bash

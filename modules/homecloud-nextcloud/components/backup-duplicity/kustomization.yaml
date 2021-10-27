@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+vars:
+  - name: DATABASE_DUMP_DIRECTORY
+    objref:
+      kind: ConfigMap
+      version: v1
+      name: database-dump
+    fieldref:
+      fieldpath: data.DATABASE_DUMP_DIRECTORY
+patchesStrategicMerge:
+  - Deployment-database-add-backup.yaml
+configMapGenerator:
+  - name: database-dump
+    behavior: create
+    envs:
+      - Configmap-database-dump.env
+secretGenerator:
+  - name: database-dump
+    behavior: create
+    envs:
+      - Secret-database-dump.env

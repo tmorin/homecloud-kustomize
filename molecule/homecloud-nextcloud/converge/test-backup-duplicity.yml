@@ -1,0 +1,22 @@
+---
+
+- name: test-backup-duplicity - apply
+  shell: |
+    set -eo pipefail
+    /tmp/hck/kustomize build ../../modules/homecloud-nextcloud/overlays/test-backup-duplicity \
+      | /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} apply -f-
+  args:
+    executable: /bin/bash
+    warn: false
+  register: apply_manifest
+  changed_when: false
+
+- name: test-backup-duplicity - wait for nextcloud
+  command: /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
+    get deployment nextcloud-application -n test-backup-duplicity \
+    -o jsonpath='{.status.readyReplicas}'
+  changed_when: false
+  register: kubectl_get_nextcloud
+  delay: 3
+  retries: 40
+  until: "'1' in kubectl_get_nextcloud.stdout"

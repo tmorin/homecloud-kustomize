@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nextcloud-database
+  name: nextcloud-database
+spec:
+  template:
+    spec:
+      containers:
+        - name: backup
+          image: thibaultmorin/duplicity-mariadb:0.8
+          imagePullPolicy: IfNotPresent
+          args:
+            - crond
+          env:
+            - name: MYSQL_HOST
+              value: $(SERVICE_DATABASE_NAME)
+          envFrom:
+            - configMapRef:
+                name: common
+                optional: false
+            - configMapRef:
+                name: database-dump
+                optional: false
+            - secretRef:
+                name: common
+                optional: false
+            - secretRef:
+                name: database-dump
+                optional: false
+          volumeMounts:
+            - name: dnas
+              mountPath: /mnt/dnas
+      volumes:
+        - name: dnas
+          persistentVolumeClaim:
+            claimName: nextcloud-dnas

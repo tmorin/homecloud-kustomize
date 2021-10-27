@@ -2,4 +2,5 @@
 
 - hosts: localhost
   tasks:
+    - include_tasks: ./converge/test-backup-duplicity.yml
     - include_tasks: ./converge/test-ingressroute-traefik.yml
