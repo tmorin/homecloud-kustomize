@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: calibreweb-application
+  name: calibreweb-application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calibreweb-application
+  template:
+    metadata:
+      labels:
+        app: calibreweb-application
+    spec:
+      containers:
+        - name: calibreweb
+          image: ghcr.io/linuxserver/calibre-web
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: calibreweb
+              containerPort: 8083
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: application
+                optional: false
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: books
+              mountPath: /books
+          livenessProbe:
+            initialDelaySeconds: 5
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - curl -if http://localhost:8083 && ls /config/lost+found
+          readinessProbe:
+            initialDelaySeconds: 5
+            exec:
+              command:
+                - /bin/bash
+                - -ec
+                - curl -if http://localhost:8083
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: calibreweb-config
+        - name: books
+          persistentVolumeClaim:
+            claimName: calibreweb-books

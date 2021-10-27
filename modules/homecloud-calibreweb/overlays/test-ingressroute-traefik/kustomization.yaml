@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: test-ingressroute-traefik
+
+resources:
+  - Namespace.yaml
+  - PV-calibreweb-books.yaml
+  - PVC-calibreweb-books.yaml
+  - PVC-calibreweb-config.yaml
+  - ../../base
+
+components:
+  - ../../components/ingressroute-traefik
+
+patchesStrategicMerge:
+  - Deployment-initialize-volumes.yaml

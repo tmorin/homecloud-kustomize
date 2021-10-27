@@ -1,7 +1,0 @@
----
-
-- name: test-ingress-traefik - curl
-  command: curl -fkH host:calibreweb.home.cloud https://localhost:32443
-  changed_when: false
-  args:
-    warn: false

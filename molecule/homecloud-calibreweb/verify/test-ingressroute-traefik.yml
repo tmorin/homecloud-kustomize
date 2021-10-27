@@ -1,0 +1,23 @@
+---
+
+- name: test-ingress-traefik - curl
+  command: curl -fkH host:calibreweb.home.cloud https://localhost:32443
+  changed_when: false
+  args:
+    warn: false
+
+- name: test-ingress-traefik - get pvc
+  command: |
+    /tmp/hck/kubectl --context kind-{{ kind_cluster_name }} \
+    get -n test-ingressroute-traefik pvc \
+    -ojsonpath="{range .items[*]}{.metadata.name} {.status.phase} {end}"
+  args:
+    warn: false
+  register: get_pvc
+
+- name: test-ingress-traefik - assert
+  assert:
+    quiet: true
+    that:
+      - "'calibreweb-config Bound' in get_pvc.stdout"
+      - "'calibreweb-books Bound' in get_pvc.stdout"

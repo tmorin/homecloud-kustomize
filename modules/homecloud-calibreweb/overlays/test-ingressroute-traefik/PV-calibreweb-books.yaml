@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: calibreweb-books
+spec:
+  storageClassName: samba
+  capacity:
+    storage: 10Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - uid=33
+    - gid=33
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: calibreweb-books
+    volumeAttributes:
+      source: //dnas-smb.homecloud.svc.cluster.local/dnas
+    nodeStageSecretRef:
+      name: dnas-smb
+      namespace: homecloud

@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: calibreweb-application
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`calibreweb.home.cloud`)
+      kind: Rule
+      services:
+        - name: calibreweb-application
+          port: 80

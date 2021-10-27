@@ -1,8 +1,0 @@
----
-
-- hosts: localhost
-  tasks:
-    - include_tasks: ./converge/test-claim-templates.yml
-    - include_tasks: ./converge/test-claimed-volumes.yml
-    - include_tasks: ./converge/test-homecloud-volumes.yml
-    - include_tasks: ./converge/test-ingressroute-traefik.yml

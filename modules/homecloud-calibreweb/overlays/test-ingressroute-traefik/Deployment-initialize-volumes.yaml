@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calibreweb-application
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: initialization
+          image: busybox
+          command:
+            - sh
+            - -c
+            - mkdir -p /config/lost+found
+          volumeMounts:
+            - name: config
+              mountPath: /config
