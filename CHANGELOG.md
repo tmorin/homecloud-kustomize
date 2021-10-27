@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/tmorin/homecloud-kustomize/compare/v0.1.2...v0.2.0) (2021-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* `nextcloud` is not more available
+* `calibreweb` is not more available
+
+### Features
+
+* **cailbreweb:** provide the homecloud way for volume definition ([d7f1169](https://github.com/tmorin/homecloud-kustomize/commit/d7f11695ded475b8c3bd3ab9d4bf28a9c39bd108))
+* replace the original module `calibreweb` with `homecloud-calibreweb` ([326cb4d](https://github.com/tmorin/homecloud-kustomize/commit/326cb4debdc2e1f0ad69d728d0c84eea02ce7251))
+* replace the original module `nextcloud` with `homecloud-nextcloud` ([6e24d1e](https://github.com/tmorin/homecloud-kustomize/commit/6e24d1ebcaabe45118997afd9d40a959d5d34c4b))
+
 ### [0.1.2](https://github.com/tmorin/homecloud-kustomize/compare/v0.1.1...v0.1.2) (2021-03-19)
 
 
